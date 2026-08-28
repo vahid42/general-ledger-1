@@ -1,0 +1,200 @@
+# AI Agent Configuration
+
+project:
+  name: general-ledger
+
+context:
+  system: ".ai/system-context.md"
+  review_policy: ".ai/review-policy.md"
+
+documentation:
+  root: "docs"
+
+  sources:
+    analysis:
+      - "docs/analysis"
+
+    architecture:
+      - "docs/architecture"
+
+    performance:
+      - "docs/performance"
+
+  rules:
+    load_relevant_documents: true
+    do_not_invent_business_rules: true
+    do_not_invent_performance_requirements: true
+    do_not_invent_architecture_rules: true
+
+
+agents:
+
+  architecture:
+    enabled: true
+
+    purpose: >
+      Review architectural integrity, module boundaries,
+      dependency direction, and layer responsibilities.
+
+    documentation:
+      - "docs/architecture"
+
+    checks:
+      - architecture_boundaries
+      - dependency_direction
+      - module_boundaries
+      - layer_responsibilities
+      - bounded_context_boundaries
+      - infrastructure_dependencies
+
+    output:
+      include:
+        - severity
+        - location
+        - problem
+        - evidence
+        - recommendation
+
+
+  domain:
+    enabled: true
+
+    purpose: >
+      Review domain model, business rules, aggregates,
+      invariants, domain behavior, and use cases.
+
+    documentation:
+      - "docs/analysis"
+
+    checks:
+      - domain_model
+      - aggregates
+      - aggregate_boundaries
+      - entities
+      - value_objects
+      - domain_services
+      - domain_policies
+      - invariants
+      - business_rules
+      - use_cases
+
+    output:
+      include:
+        - severity
+        - location
+        - problem
+        - evidence
+        - recommendation
+
+
+  performance:
+    enabled: true
+
+    purpose: >
+      Review performance risks according to the project's
+      documented performance rules and requirements.
+
+    documentation:
+      - "docs/performance"
+
+    checks:
+      - database_access
+      - n_plus_one
+      - batch_operations
+      - collection_processing
+      - remote_calls
+      - transaction_boundaries
+      - memory_usage
+      - algorithmic_complexity
+      - serialization
+      - concurrency
+      - caching
+
+    rules:
+      source: "docs/performance/performance-rules.md"
+      do_not_invent_requirements: true
+
+    output:
+      include:
+        - severity
+        - confidence
+        - status
+        - location
+        - problem
+        - evidence
+        - risk
+        - recommendation
+        - rule_reference
+
+
+review:
+  enabled: true
+
+  workflow:
+    - load_context
+    - load_relevant_documentation
+    - understand_change
+    - identify_affected_modules
+    - run_architecture_agent
+    - run_domain_agent
+    - run_performance_agent
+    - collect_findings
+    - remove_duplicates
+    - determine_final_status
+    - produce_report
+
+  severity:
+    - BLOCKER
+    - CRITICAL
+    - MAJOR
+    - MINOR
+    - SUGGESTION
+
+  status:
+    accepted: ACCEPTED
+    changes_requested: CHANGES_REQUESTED
+    accepted_with_suggestions: ACCEPTED_WITH_SUGGESTIONS
+
+  false_positive_policy:
+    prefer_high_confidence_findings: true
+    avoid_style_only_findings: true
+    avoid_speculative_findings: true
+
+
+output:
+  format: markdown
+
+  include:
+    - overall_status
+    - agent_results
+    - findings
+    - evidence
+    - recommendations
+    - summary
+
+  finding:
+    required_fields:
+      - severity
+      - location
+      - problem
+      - evidence
+      - recommendation
+
+
+principles:
+  protect_architecture: true
+  protect_domain_invariants: true
+  protect_business_rules: true
+  protect_performance_requirements: true
+  prefer_existing_project_conventions: true
+  avoid_unnecessary_refactoring: true
+  avoid_unnecessary_abstractions: true
+  require_evidence_for_findings: true
+
+
+rules:
+  architecture_source: documentation
+  business_rules_source: documentation
+  performance_rules_source: documentation
+  implementation_is_not_authoritative: true
+  do_not_invent_missing_rules: true
